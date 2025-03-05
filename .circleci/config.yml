@@ -142,7 +142,7 @@ jobs:
       - run: docker version
 
   docker_layer_caching:
-    executor: ubuntu-cloud
+    executor: docker-default
     steps:
       - run: which docker
       - run: docker -v
