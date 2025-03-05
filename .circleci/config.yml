@@ -199,7 +199,7 @@ jobs:
     steps:
       - checkout
       - run: mkdir -p stuff
-      - run: truncate -s 70M ./stuff/thing
+      - run: head -c 7M </dev/zero > ./stuff/thing
       - save_cache:
           key: v4-file-cache-{{ .Branch }}-{{ .Revision }}
           paths:
@@ -225,9 +225,9 @@ jobs:
       - run:
           name: Creating Dummy Artifacts
           command: |
-            truncate -s 15M > /tmp/artifact-1.txt;
+            head -c 7M </dev/zero > /tmp/artifact-1.txt;
             mkdir /tmp/artifacts;
-            truncate -s 10M > /tmp/artifacts/artifact-2.txt;
+            head -c 7M </dev/zero > /tmp/artifacts/artifact-2.txt;
       - store_artifacts:
           path: /tmp/artifact-1.txt
           destination: artifact-file.txt
