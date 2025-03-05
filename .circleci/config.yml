@@ -183,7 +183,9 @@ jobs:
     steps:
       - attach_workspace:
            at: ./attached
-      - run: |
+      - run: 
+          name: Check if attached file exists
+          command: |
           if [[ $(< ./attached/stuff/thing) != '5' ]]; then
             echo 'Sadness, the value is not what we expected, so the workspace write/read did not work'
             exit 1
@@ -209,7 +211,9 @@ jobs:
       - restore_cache:
             keys:
               - v4-file-cache-{{ .Branch }}-{{ .Revision }}
-      - run: |
+      - run: 
+          name: Check if cache was populated...
+          command:|
             if [[ $(wc -c < stuff/thing) -lt 5242880  ]]; then
               exit 1
             else
