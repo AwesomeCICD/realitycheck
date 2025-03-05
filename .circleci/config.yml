@@ -210,11 +210,12 @@ jobs:
             keys:
               - v4-file-cache-{{ .Branch }}-{{ .Revision }}
       - run: |
-            if [[ $(< stuff/thing) != '5' ]]; then
+            if [[ $(wc -c < stuff/thing) -lt 5242880  ]]; then
               exit 1
             else
               echo "The cache was populated"
             fi
+
 
   artifacts_test_results:
     docker:
