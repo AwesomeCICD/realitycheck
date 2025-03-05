@@ -1,8 +1,8 @@
-version: 2
+version: 2.1
 
 resource_job_defaults: &resource_job_defaults
   docker:
-    - image: 'cimg/base:2021.02-20.04'
+    - image: 'cimg/base:current'
   steps:
     - run:
         name: verify required Environment Variables
@@ -22,7 +22,7 @@ resource_job_defaults: &resource_job_defaults
           jq '.picard.resource_class.class' | grep $CIRCLE_JOB
 
 remote_docker_defaults: &remote_docker_defaults
-  docker: [{image: 'docker:17.06-git'}]
+  docker: [{image: 'cimg/base:current'}]
 
 basic_docker_build: &basic_docker_build
   name: "Build a really basic docker image"
@@ -65,7 +65,7 @@ jobs:
   
   check_if_environment_is_aws:
     docker:
-    - image: 'cimg/base:2021.02-20.04'
+    - image: 'cimg/base:current'
     steps:
       - run:
           name: Verify AWS Environment
@@ -81,7 +81,7 @@ jobs:
 
   check_if_environment_is_gcp:
     docker:
-    - image: 'cimg/base:2021.02-20.04'
+    - image: 'cimg/base:current'
     steps:
       - run:
           name: Verify GCP Environment
@@ -209,7 +209,7 @@ jobs:
 
   save_and_restore_cache:
     docker:
-      - image: circleci/python
+      - image: cimg/base:stable
     working_directory: ~/realitycheck
     steps:
       - checkout
@@ -238,7 +238,7 @@ jobs:
 
   artifacts_test_results:
     docker:
-      - image: python:3.6.0
+      - image: cimg/base:current
     working_directory: ~/realitycheck
     steps:
       - checkout
@@ -261,7 +261,6 @@ jobs:
           path: test-results
 
 workflows:
-  version: 2
   resource_class_jobs:
     jobs:
       - small
@@ -279,17 +278,11 @@ workflows:
   
   aws_jobs:
     jobs:
-      - check_if_environment_is_aws
-      - aws_arm:
-          requires:
-            - check_if_environment_is_aws
+      - aws_arm
   
   gcp_jobs:
     jobs:
-      - check_if_environment_is_gcp
-      - android_machine:
-          requires:
-            - check_if_environment_is_gcp
+      - android_machine
 
   feature_jobs:
     jobs:
