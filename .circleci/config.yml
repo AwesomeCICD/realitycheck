@@ -46,6 +46,12 @@ basic_docker_build:
           docker run --rm throwaway:$CIRCLE_BUILD_NUM
 
 jobs:
+  deploy-job:
+    executor: docker-default
+    steps:
+      - run: sleep 10
+      - run: echo "deployments run here"
+      
   runner-eks:
     executor: container-runner-default
     parallelism: 30
@@ -264,6 +270,10 @@ workflows:
   aws_jobs:
     jobs:
       - aws_arm
+
+  deploy_workflow:
+    jobs:
+      - deploy-job
   
   gcp_jobs:
     jobs:
