@@ -6,7 +6,7 @@ executors:
       - image: cimg/base:current
   ubuntu-cloud:
     machine:
-      image: ubuntu2404:current
+      image: ubuntu-2404:current
 
   context-default: 
     docker:
@@ -134,7 +134,7 @@ jobs:
       SLEEP: 1
 
   remote_docker:
-    executor: ubuntu-cloud
+    executor: docker-default
     steps:
       - run: which docker
       - run: docker -v
