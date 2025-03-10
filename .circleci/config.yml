@@ -62,7 +62,7 @@ jobs:
   set-cci-hostname-envvar:
     executor: docker-default
     steps:
-      - set-cci-hostname-envvar
+      - set-circle-hostname-envvar
       
   deploy-job:
     executor: docker-default
@@ -311,10 +311,10 @@ workflows:
           context: individual-local
           requires:
             - set-cci-hostname-envvar
-      - write_workspace
-      - read_workspace:
+      - write_workspace:
           requires:
             - set-cci-hostname-envvar
+      - read_workspace:
           requires:
             - write_workspace
       - artifacts_test_results:
