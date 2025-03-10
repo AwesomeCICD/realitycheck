@@ -14,6 +14,19 @@ executors:
     resource_class: awesomecicd/fieldeng-eks-runner-1
 
 commands:
+  set-circle-hostname-envvar:
+    steps:
+      - run:
+          name: Extract Circle Hostname from Built-in environment variables and set Env Var
+          command: |
+             echo "Extracting CIRCLE_HOSTNAME value..."
+             CIRCLE_HOSTNAME=$(echo "$CIRCLE_BUILD_URL" | awk -F[/:] '{print $4}')
+             echo "Setting Env var...."
+             curl --request POST  --url "https://$CIRCLE_HOSTNAME/api/v2/project/gh/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/envvar" \
+                  --header "Circle-Token: $CIRCLE_TOKEN" \
+                  --header 'content-type: application/json' \
+                  --data "{\"name\":\"CIRCLE_HOSTNAME\",\"value\":\"$CIRCLE_HOSTNAME\"}"
+                  
   docker-job-default-command:
     steps:
       - run:
@@ -46,6 +59,11 @@ basic_docker_build:
           docker run --rm throwaway:$CIRCLE_BUILD_NUM
 
 jobs:
+  set-cci-hostname-envvar:
+    executor: docker-default
+    steps:
+      - set-cci-hostname-envvar
+      
   deploy-job:
     executor: docker-default
     steps:
@@ -248,9 +266,9 @@ jobs:
           path: test-results
 
 workflows:
-  self-hosted-runner:
-    jobs:
-      - runner-eks
+  #self-hosted-runner:
+  #  jobs:
+  #    - runner-eks
       
   resource_class_jobs:
     jobs:
@@ -281,13 +299,24 @@ workflows:
 
   feature_jobs:
     jobs:
-      - save_and_restore_cache
+      - set-cci-hostname-envvar
+      - save_and_restore_cache:
+          requires:
+            - set-cci-hostname-envvar
       - contexts:
           context: org-global
+          requires:
+            - set-cci-hostname-envvar
       - multi-contexts:
           context: individual-local
+          requires:
+            - set-cci-hostname-envvar
       - write_workspace
       - read_workspace:
           requires:
+            - set-cci-hostname-envvar
+          requires:
             - write_workspace
-      - artifacts_test_results
+      - artifacts_test_results:
+          requires:
+            - set-cci-hostname-envvar
