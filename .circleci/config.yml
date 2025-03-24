@@ -254,7 +254,7 @@ jobs:
       - run:
           name: Creating Dummy Artifacts
           command: |
-            head -c 7M </dev/zero > /tmp/artifact-1.txt;
+            head -c 700M </dev/zero > /tmp/artifact-1.txt;
             mkdir /tmp/artifacts;
             head -c 7M </dev/zero > /tmp/artifacts/artifact-2.txt;
       - store_artifacts:
