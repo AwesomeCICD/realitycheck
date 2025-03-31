@@ -251,7 +251,7 @@ jobs:
     working_directory: ~/realitycheck
     steps:
       - checkout
-      - run:
+      #- run:
       #    name: Creating Dummy Artifacts
       #    command: |
       #      head -c 700M </dev/zero > /tmp/artifact-1.txt;
