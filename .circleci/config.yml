@@ -247,6 +247,10 @@ jobs:
   artifacts_test_results:
     executor: docker-default
     working_directory: ~/realitycheck
+    parameters:
+      dummy-artifact-path:
+        type: string
+        default: "/tmp/dummy-artifacts"
     steps:
       - checkout
       - run:
@@ -259,12 +263,12 @@ jobs:
       - run:
           name: Create of small dummy artifacts as well
           command: |
-              mkdir -p /tmp/dummy-artifacts;
+              mkdir -p <<parameters.dummy-artifact-path>>;
               for i in $(seq -w 1 500); do
-                  head -c 51240 </dev/zero > /tmp/artifacts/artifact-$i.txt;
+                  head -c 51240 </dev/zero > <<parameters.dummy-artifact-path>>/artifact-$i.txt;
               done
       - store_artifacts:
-            path: /tmp/dummy-artifacts
+            path: <<parameters.dummy-artifact-path>>
             destination: dummy-artifacts
       - store_test_results:
           path: test-results
