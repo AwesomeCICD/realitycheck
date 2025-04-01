@@ -196,7 +196,7 @@ jobs:
     executor: docker-default
     steps:
       - run: mkdir stuff
-      - run: echo 5 >./stuff/thing
+      - run: head -c 7M </dev/zero > ./stuff/thing
       - persist_to_workspace:
           root: .
           paths:
@@ -210,7 +210,7 @@ jobs:
       - run: 
           name: Check if attached file exists
           command: |
-                if [[ $(< ./attached/stuff/thing) != '5' ]]; then
+                if find ./attached/stuff/thing -size -7M | grep -q .; then
                   echo 'Sadness, the value is not what we expected, so the workspace write/read did not work'
                   exit 1
                 else
