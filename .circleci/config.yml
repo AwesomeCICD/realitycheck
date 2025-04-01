@@ -219,8 +219,7 @@ jobs:
                 fi
 
   save_and_restore_cache:
-    docker:
-      - image: cimg/base:stable
+    executor: docker-default
     working_directory: ~/realitycheck
     steps:
       - checkout
@@ -246,32 +245,27 @@ jobs:
 
 
   artifacts_test_results:
-    docker:
-      - image: cimg/base:current
+    executor: docker-default
     working_directory: ~/realitycheck
     steps:
       - checkout
-      #- run:
-      #    name: Creating Dummy Artifacts
-      #    command: |
-      #      head -c 700M </dev/zero > /tmp/artifact-1.txt;
-      #      mkdir /tmp/artifacts;
-      #      head -c 7M </dev/zero > /tmp/artifacts/artifact-2.txt;
-      #- store_artifacts:
-      #    path: /tmp/artifact-1.txt
-      #    destination: artifact-file.txt
       - run:
-          name: Creating Dummy Artifacts
+          name: Create a large artifact file
           command: |
-              mkdir -p /tmp/artifacts;
-              for i in $(seq -w 1 300); do
-                  head -c 10240 </dev/zero > /tmp/artifacts/artifact-$i.txt;
+            head -c 700M </dev/zero > /tmp/artifact-1.txt;
+      - store_artifacts:
+          path: /tmp/artifact-1.txt
+          destination: artifact-file.txt
+      - run:
+          name: Create of small dummy artifacts as well
+          command: |
+              mkdir -p /tmp/dummy-artifacts;
+              for i in $(seq -w 1 500); do
+                  head -c 51240 </dev/zero > /tmp/artifacts/artifact-$i.txt;
               done
       - store_artifacts:
-            path: /tmp/artifacts
+            path: /tmp/dummy-artifacts
             destination: dummy-artifacts
-      #- store_artifacts:
-      #    path: /tmp/artifacts
       - store_test_results:
           path: test-results
 
