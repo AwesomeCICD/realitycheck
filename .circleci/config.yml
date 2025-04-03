@@ -265,7 +265,7 @@ jobs:
           command: |
               mkdir -p <<parameters.dummy-artifact-path>>;
               for i in $(seq -w 1 500); do
-                  head -c 51240 </dev/zero > <<parameters.dummy-artifact-path>>/artifact-$i.txt;
+                  head -c 51240 </dev/zero > <<parameters.dummy-artifact-path>>/artifact-$i-$CIRCLE_PIPELINE_ID.txt;
               done
       - store_artifacts:
             path: <<parameters.dummy-artifact-path>>
